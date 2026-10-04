@@ -295,7 +295,11 @@ enum usb_endpoints {
 #endif
 
 #if (NEXT_EPNUM - 1) > MAX_ENDPOINTS
-#    error There are not enough available endpoints to support all functions. Please disable one or more of the following: Mouse Keys, Extra Keys, Console, NKRO, MIDI, Serial, Steno
+#    ifdef BIOS_COMPATIBILITY_ENABLE
+#        error BIOS_COMPATIBILITY_ENABLE: insufficient USB endpoints. The dedicated boot keyboard endpoint cannot be shared; disable one or more optional USB features.
+#    else
+#        error There are not enough available endpoints to support all functions. Please disable one or more of the following: Mouse Keys, Extra Keys, Console, NKRO, MIDI, Serial, Steno
+#    endif
 #endif
 
 #define KEYBOARD_EPSIZE 8

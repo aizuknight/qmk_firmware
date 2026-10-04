@@ -141,6 +141,10 @@ enum desktop_usages {
 
 #define NKRO_REPORT_BITS 30
 
+#if defined(BIOS_COMPATIBILITY_ENABLE) && defined(KEYBOARD_SHARED_EP)
+#    error BIOS_COMPATIBILITY_ENABLE requires a dedicated keyboard endpoint; KEYBOARD_SHARED_EP cannot be enabled
+#endif
+
 #ifdef KEYBOARD_SHARED_EP
 #    define KEYBOARD_REPORT_SIZE 9
 #else

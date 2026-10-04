@@ -1026,6 +1026,7 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+                "bios_compatibility": {"type": "boolean"},
                 "device_ver": {
                     "$ref": "./definitions.jsonschema#/hex_number_4d",
                     "$comment": "Deprecated: use device_version instead"

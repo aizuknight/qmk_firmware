@@ -880,6 +880,10 @@ Configures the [Stenography](features/stenography) feature.
 ## USB {#usb}
 
 * `usb`
+    * `bios_compatibility` <Badge type="info">Boolean</Badge>
+        * Keep the keyboard on a dedicated interrupt IN endpoint as an 8-byte, report-ID-free HID Boot Keyboard interface.
+        * Cannot be enabled together with `usb.shared_endpoint.keyboard`.
+        * Default: `false`
     * `device_version` <Badge type="info">String</Badge> <Badge>Required</Badge>
         * A BCD version number in the format `MM.m.r` (up to `99.9.9`).
         * Example: `"1.0.0"`

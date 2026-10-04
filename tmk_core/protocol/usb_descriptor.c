@@ -118,6 +118,15 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM KeyboardReport[] = {
 };
 #endif
 
+#ifdef BIOS_COMPATIBILITY_ENABLE
+// BIOS compatibility depends on this interface remaining first, dedicated, and
+// byte-for-byte compatible with the USB HID boot keyboard report.
+STATIC_ASSERT(KEYBOARD_INTERFACE == 0, "The BIOS-compatible keyboard must be interface 0");
+STATIC_ASSERT(KEYBOARD_IN_EPNUM == 1, "The BIOS-compatible keyboard must reserve endpoint 1");
+STATIC_ASSERT(KEYBOARD_EPSIZE == 8, "The BIOS-compatible keyboard endpoint must be 8 bytes");
+STATIC_ASSERT(sizeof(report_keyboard_t) == 8, "The BIOS-compatible keyboard report must be 8 bytes");
+#endif
+
 #ifdef MOUSE_ENABLE
 #    ifndef MOUSE_SHARED_EP
 const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] = {

@@ -440,6 +440,31 @@ Use these to enable or disable building certain features. The more you have enab
 
 ## USB Endpoint Limitations
 
+`BIOS_COMPATIBILITY_ENABLE = yes` reserves a dedicated interrupt IN endpoint for
+an 8-byte, report-ID-free HID Boot Keyboard interface. The interface remains
+boot-report-compatible in both Boot Protocol and Report Protocol, which also
+supports firmware that discovers a boot keyboard but does not issue
+`SET_PROTOCOL(BOOT)`.
+
+BIOS compatibility mode cannot be combined with `KEYBOARD_SHARED_EP = yes`.
+The build fails instead of silently moving the keyboard onto a shared endpoint.
+If optional USB functions exhaust the MCU's endpoints, the build also fails and
+the dedicated keyboard endpoint is retained.
+
+The equivalent data-driven configuration is:
+
+```json
+{
+    "usb": {
+        "bios_compatibility": true
+    }
+}
+```
+
+This option defaults to `no` in QMK. A downstream firmware distribution may
+enable it by default, but boards which intentionally share the keyboard
+endpoint must explicitly remain outside BIOS compatibility mode.
+
 In order to provide services over USB, QMK has to use USB endpoints.
 These are a finite resource: each microcontroller has only a certain number.
 This limits what features can be enabled together.

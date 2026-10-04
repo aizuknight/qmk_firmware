@@ -435,12 +435,18 @@ static bool receive_report(usb_endpoint_out_lut_t endpoint, void *report, size_t
 }
 
 void send_keyboard(report_keyboard_t *report) {
+#ifdef BIOS_COMPATIBILITY_ENABLE
+    // Keep Report Protocol byte-for-byte compatible with Boot Protocol for
+    // firmware that reads the interface without issuing SET_PROTOCOL.
+    send_report(USB_ENDPOINT_IN_KEYBOARD, &report->mods, 8);
+#else
     /* If we're in Boot Protocol, don't send any report ID or other funky fields */
     if (usb_device_state_get_protocol() == USB_PROTOCOL_BOOT) {
         send_report(USB_ENDPOINT_IN_KEYBOARD, &report->mods, 8);
     } else {
         send_report(USB_ENDPOINT_IN_KEYBOARD, report, KEYBOARD_REPORT_SIZE);
     }
+#endif
 }
 
 void send_nkro(report_nkro_t *report) {

@@ -6,6 +6,15 @@ SRC +=	\
 
 SHARED_EP_ENABLE = no
 MOUSE_SHARED_EP ?= yes
+BIOS_COMPATIBILITY_ENABLE ?= no
+
+ifeq ($(strip $(BIOS_COMPATIBILITY_ENABLE)), yes)
+    ifeq ($(strip $(KEYBOARD_SHARED_EP)), yes)
+        $(error BIOS_COMPATIBILITY_ENABLE requires a dedicated keyboard endpoint; KEYBOARD_SHARED_EP cannot be enabled)
+    endif
+    OPT_DEFS += -DBIOS_COMPATIBILITY_ENABLE
+endif
+
 ifeq ($(strip $(KEYBOARD_SHARED_EP)), yes)
     OPT_DEFS += -DKEYBOARD_SHARED_EP
     SHARED_EP_ENABLE = yes

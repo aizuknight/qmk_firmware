@@ -518,12 +518,18 @@ void EVENT_USB_Device_ControlRequest(void) {
  * FIXME: Needs doc
  */
 static void send_keyboard(report_keyboard_t *report) {
+#ifdef BIOS_COMPATIBILITY_ENABLE
+    // The dedicated interface uses the boot-compatible report in both HID
+    // protocols so hosts that omit SET_PROTOCOL can still consume it.
+    send_report(KEYBOARD_IN_EPNUM, &report->mods, 8);
+#else
     /* If we're in Boot Protocol, don't send any report ID or other funky fields */
     if (usb_device_state_get_protocol() == USB_PROTOCOL_BOOT) {
         send_report(KEYBOARD_IN_EPNUM, &report->mods, 8);
     } else {
         send_report(KEYBOARD_IN_EPNUM, report, KEYBOARD_REPORT_SIZE);
     }
+#endif
 
     keyboard_report_sent = *report;
 }

@@ -236,11 +236,17 @@ host_driver_t *vusb_driver(void) {
 }
 
 static void send_keyboard(report_keyboard_t *report) {
+#ifdef BIOS_COMPATIBILITY_ENABLE
+    // V-USB's endpoint 1 remains an 8-byte boot-compatible keyboard in both
+    // HID protocols.
+    send_report(1, &report->mods, 8);
+#else
     if (usb_device_state_get_protocol() == USB_PROTOCOL_BOOT) {
         send_report(1, &report->mods, 8);
     } else {
         send_report(1, report, sizeof(report_keyboard_t));
     }
+#endif
 
     keyboard_report_sent = *report;
 }
@@ -455,6 +461,11 @@ const PROGMEM uchar keyboard_hid_report[] = {
     0xC0,       // End Collection
 #ifndef KEYBOARD_SHARED_EP
 };
+#endif
+
+#ifdef BIOS_COMPATIBILITY_ENABLE
+STATIC_ASSERT(KEYBOARD_INTERFACE == 0, "The BIOS-compatible keyboard must be interface 0");
+STATIC_ASSERT(sizeof(report_keyboard_t) == 8, "The BIOS-compatible keyboard report must be 8 bytes");
 #endif
 
 #if defined(SHARED_EP_ENABLE) && !defined(SHARED_REPORT_STARTED)
